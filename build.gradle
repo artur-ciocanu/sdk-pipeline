@@ -1,0 +1,48 @@
+plugins {
+    id "idea"
+    id "com.diffplug.spotless" version "5.6.1"
+}
+
+apply plugin: "java"
+apply plugin: "java-library"
+
+build.dependsOn spotlessApply
+
+defaultTasks "spotlessApply", "build"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+compileJava {
+    options.encoding = "UTF-8"
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}
+
+compileTestJava {
+    options.encoding = "UTF-8"
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+        removeUnusedImports()
+        endWithNewline()
+    }
+}
+
+dependencies {
+    implementation "com.adobe.target:target-java-sdk:2.1.4"
+    implementation "com.squareup.okhttp3:okhttp:4.9.1"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.12.3"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.5.2"
+}
+
+test {
+    useJUnitPlatform()
+}
