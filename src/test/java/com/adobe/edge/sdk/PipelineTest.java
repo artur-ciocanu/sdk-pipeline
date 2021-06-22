@@ -1,11 +1,11 @@
 package com.adobe.edge.sdk;
 
-import com.adobe.edge.sdk.http.DeliveryResponsePipeline;
-import com.adobe.edge.sdk.http.HttpLoggingPipeline;
-import com.adobe.edge.sdk.http.HttpSendPipeline;
-import com.adobe.edge.sdk.http.OkHttpRequestPipeline;
-import com.adobe.edge.sdk.http.RequestLoggingPipeline;
-import com.adobe.edge.sdk.http.ResponseLoggingPipeline;
+import com.adobe.edge.sdk.http.DeliveryResponseStep;
+import com.adobe.edge.sdk.http.HttpLoggingStep;
+import com.adobe.edge.sdk.http.HttpSendStep;
+import com.adobe.edge.sdk.http.OkHttpRequestStep;
+import com.adobe.edge.sdk.http.RequestLoggingStep;
+import com.adobe.edge.sdk.http.ResponseLoggingStep;
 import com.adobe.edge.sdk.core.Pipeline;
 import com.adobe.target.delivery.v1.model.ChannelType;
 import com.adobe.target.delivery.v1.model.Context;
@@ -26,18 +26,17 @@ public class PipelineTest {
   public void testPipeline() {
     ObjectMapper mapper = new ObjectMapper();
     TargetDeliveryRequest request = createRequest();
-    RequestLoggingPipeline requestLoggingPipeline = new RequestLoggingPipeline();
-    OkHttpRequestPipeline okHttpRequestPipeline = new OkHttpRequestPipeline(mapper);
-    HttpSendPipeline httpSendPipeline = new HttpSendPipeline();
-    HttpLoggingPipeline httpLoggingPipeline = HttpLoggingPipeline.of(httpSendPipeline);
-    ResponseLoggingPipeline responseLoggingPipeline = new ResponseLoggingPipeline();
-    DeliveryResponsePipeline responsePipeline = new DeliveryResponsePipeline(mapper);
-    Pipeline<TargetDeliveryRequest, DeliveryResponse> pipeline =
-        okHttpRequestPipeline
-            .pipe(requestLoggingPipeline)
-            .pipe(httpLoggingPipeline)
-            .pipe(responseLoggingPipeline)
-            .pipe(responsePipeline);
+    RequestLoggingStep requestLoggingStep = new RequestLoggingStep();
+    OkHttpRequestStep okHttpRequestStep = new OkHttpRequestStep(mapper);
+    HttpSendStep httpSendStep = new HttpSendStep();
+    HttpLoggingStep httpLoggingStep = HttpLoggingStep.of(httpSendStep);
+    ResponseLoggingStep responseLoggingStep = new ResponseLoggingStep();
+    DeliveryResponseStep responseStep = new DeliveryResponseStep(mapper);
+    Pipeline<TargetDeliveryRequest, DeliveryResponse> pipeline = Pipeline.of(okHttpRequestStep)
+            .pipe(requestLoggingStep)
+            .pipe(httpLoggingStep)
+            .pipe(responseLoggingStep)
+            .pipe(responseStep);
 
     DeliveryResponse response = pipeline.execute(request, null);
 

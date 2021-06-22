@@ -1,17 +1,17 @@
 package com.adobe.edge.sdk.http;
 
-import com.adobe.edge.sdk.core.Pipeline;
 import com.adobe.edge.sdk.core.PipelineContext;
+import com.adobe.edge.sdk.core.Step;
 import com.adobe.target.delivery.v1.model.DeliveryResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import okhttp3.Response;
 
-public class DeliveryResponsePipeline implements Pipeline<Response, DeliveryResponse> {
+public class DeliveryResponseStep implements Step<Response, DeliveryResponse> {
 
   private final ObjectMapper objectMapper;
 
-  public DeliveryResponsePipeline(ObjectMapper objectMapper) {
+  public DeliveryResponseStep(ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
   }
 

@@ -1,20 +1,20 @@
 package com.adobe.edge.sdk.http;
 
-import com.adobe.edge.sdk.core.Pipeline;
 import com.adobe.edge.sdk.core.PipelineContext;
+import com.adobe.edge.sdk.core.Step;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class HttpLoggingPipeline implements Pipeline<Request, Response> {
+public class HttpLoggingStep implements Step<Request, Response> {
 
-  private final Pipeline<Request, Response> plugin;
+  private final Step<Request, Response> plugin;
 
-  private HttpLoggingPipeline(Pipeline<Request, Response> plugin) {
+  private HttpLoggingStep(Step<Request, Response> plugin) {
     this.plugin = plugin;
   }
 
-  public static HttpLoggingPipeline of(Pipeline<Request, Response> plugin) {
-    return new HttpLoggingPipeline(plugin);
+  public static HttpLoggingStep of(Step<Request, Response> plugin) {
+    return new HttpLoggingStep(plugin);
   }
 
   @Override
@@ -27,4 +27,5 @@ public class HttpLoggingPipeline implements Pipeline<Request, Response> {
 
     return response;
   }
+
 }
