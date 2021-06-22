@@ -1,11 +1,12 @@
 package com.adobe.edge.sdk;
 
-import com.adobe.edge.sdk.http.HttpLogPlugin;
-import com.adobe.edge.sdk.http.HttpSendPlugin;
-import com.adobe.edge.sdk.http.LogRequestPlugin;
-import com.adobe.edge.sdk.http.LogResponsePlugin;
-import com.adobe.edge.sdk.http.ToDeliveryResponsePlugin;
-import com.adobe.edge.sdk.http.ToOkHttpRequestPlugin;
+import com.adobe.edge.sdk.http.DeliveryResponsePipeline;
+import com.adobe.edge.sdk.http.HttpLoggingPipeline;
+import com.adobe.edge.sdk.http.HttpSendPipeline;
+import com.adobe.edge.sdk.http.OkHttpRequestPipeline;
+import com.adobe.edge.sdk.http.RequestLoggingPipeline;
+import com.adobe.edge.sdk.http.ResponseLoggingPipeline;
+import com.adobe.edge.sdk.core.Pipeline;
 import com.adobe.target.delivery.v1.model.ChannelType;
 import com.adobe.target.delivery.v1.model.Context;
 import com.adobe.target.delivery.v1.model.DeliveryResponse;
@@ -23,18 +24,22 @@ public class PipelineTest {
 
   @Test
   public void testPipeline() {
-    TargetDeliveryRequest request = createRequest();
-    HttpSendPlugin sendPlugin = new HttpSendPlugin();
-    HttpLogPlugin logPlugin = HttpLogPlugin.of(sendPlugin);
     ObjectMapper mapper = new ObjectMapper();
+    TargetDeliveryRequest request = createRequest();
+    RequestLoggingPipeline requestLoggingPipeline = new RequestLoggingPipeline();
+    OkHttpRequestPipeline okHttpRequestPipeline = new OkHttpRequestPipeline(mapper);
+    HttpSendPipeline httpSendPipeline = new HttpSendPipeline();
+    HttpLoggingPipeline httpLoggingPipeline = HttpLoggingPipeline.of(httpSendPipeline);
+    ResponseLoggingPipeline responseLoggingPipeline = new ResponseLoggingPipeline();
+    DeliveryResponsePipeline responsePipeline = new DeliveryResponsePipeline(mapper);
+    Pipeline<TargetDeliveryRequest, DeliveryResponse> pipeline =
+        okHttpRequestPipeline
+            .pipe(requestLoggingPipeline)
+            .pipe(httpLoggingPipeline)
+            .pipe(responseLoggingPipeline)
+            .pipe(responsePipeline);
 
-    DeliveryResponse response =
-        Pipeline.from(new ToOkHttpRequestPlugin(mapper))
-            .add(new LogRequestPlugin())
-            .add(logPlugin)
-            .add(new LogResponsePlugin())
-            .add(new ToDeliveryResponsePlugin(mapper))
-            .execute(request, null);
+    DeliveryResponse response = pipeline.execute(request, null);
 
     Assertions.assertEquals(response.getStatus(), 200);
     Assertions.assertNotNull(response.getExecute());

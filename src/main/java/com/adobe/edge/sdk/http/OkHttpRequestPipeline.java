@@ -1,7 +1,7 @@
 package com.adobe.edge.sdk.http;
 
-import com.adobe.edge.sdk.PipelineContext;
-import com.adobe.edge.sdk.Plugin;
+import com.adobe.edge.sdk.core.Pipeline;
+import com.adobe.edge.sdk.core.PipelineContext;
 import com.adobe.target.delivery.v1.model.DeliveryRequest;
 import com.adobe.target.edge.client.model.TargetDeliveryRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,14 +10,14 @@ import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-public class ToOkHttpRequestPlugin implements Plugin<TargetDeliveryRequest, Request> {
+public class OkHttpRequestPipeline implements Pipeline<TargetDeliveryRequest, Request> {
 
   private static final String URL =
       "https://mboxedge34.tt.omtrdc.net/rest/v1/delivery?client=adobesummit2018&sessionId=aa-bb-cc-dd";
 
   private final ObjectMapper objectMapper;
 
-  public ToOkHttpRequestPlugin(ObjectMapper objectMapper) {
+  public OkHttpRequestPipeline(ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
   }
 

@@ -1,18 +1,18 @@
 package com.adobe.edge.sdk.http;
 
-import com.adobe.edge.sdk.PipelineContext;
-import com.adobe.edge.sdk.Plugin;
+import com.adobe.edge.sdk.core.Pipeline;
+import com.adobe.edge.sdk.core.PipelineContext;
 import java.io.IOException;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class HttpSendPlugin implements Plugin<Request, Response> {
+public class HttpSendPipeline implements Pipeline<Request, Response> {
 
   private final OkHttpClient httpClient;
 
-  public HttpSendPlugin() {
+  public HttpSendPipeline() {
     this.httpClient = new OkHttpClient();
   }
 

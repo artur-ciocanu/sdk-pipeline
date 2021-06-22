@@ -1,12 +1,12 @@
 package com.adobe.edge.sdk.http;
 
-import com.adobe.edge.sdk.PipelineContext;
-import com.adobe.edge.sdk.Plugin;
+import com.adobe.edge.sdk.core.Pipeline;
+import com.adobe.edge.sdk.core.PipelineContext;
 import java.io.IOException;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class LogResponsePlugin implements Plugin<Response, Response> {
+public class ResponseLoggingPipeline implements Pipeline<Response, Response> {
   @Override
   public Response execute(Response response, PipelineContext context) {
     System.out.println("Just response: " + response);
